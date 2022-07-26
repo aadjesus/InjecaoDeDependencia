@@ -12,11 +12,11 @@ namespace InjecaoDeDependencia.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly IWeatherForecast _weatherForecast;
-        private readonly ICertificadoHelperBase _certificadoHelperBase;
+        private readonly ICertificadoUseCase _certificadoHelperBase;
 
         public WeatherForecastController(
             IWeatherForecast weatherForecast,
-            ICertificadoHelperBase certificadoHelperBase)
+            ICertificadoUseCase certificadoHelperBase)
         {
             _weatherForecast = weatherForecast;
             _certificadoHelperBase = certificadoHelperBase;

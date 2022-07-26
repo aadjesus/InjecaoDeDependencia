@@ -28,11 +28,12 @@ namespace InjecaoDeDependencia
         {
             services.AddSwaggerGen(s =>
             {
-				s.SwaggerDoc("v1", new OpenApiInfo {Title = "Protected API", Version = "v1"});
+                s.SwaggerDoc("v1", new OpenApiInfo { Title = "Protected API", Version = "v1" });
             });
 
             services.AddSingleton<IWeatherForecast>(s => new WeatherForecast { Descricao = "Startup" });
-            services.AddScoped<ICertificadoHelperBase, CertificadoHelperBase>();
+            services.AddScoped<ICertificadoUseCase, CertificadoUseCase>();
+            services.AddScoped<ICertificadoRepository, CertificadoRepository>();
 
             services.AddControllers();
         }
