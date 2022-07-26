@@ -12,14 +12,14 @@ namespace InjecaoDeDependencia.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly IWeatherForecast _weatherForecast;
-        private readonly ICertificadoUseCase _certificadoHelperBase;
+        private readonly ICertificadoUseCase _certificadoUseCase;
 
         public WeatherForecastController(
             IWeatherForecast weatherForecast,
             ICertificadoUseCase certificadoHelperBase)
         {
             _weatherForecast = weatherForecast;
-            _certificadoHelperBase = certificadoHelperBase;
+            _certificadoUseCase = certificadoHelperBase;
         }
 
         [HttpGet(nameof(GetTeste))]
@@ -31,7 +31,7 @@ namespace InjecaoDeDependencia.Controllers
         [HttpGet(nameof(GetTeste1))]
         public IActionResult GetTeste1(int id)
         {
-            return Ok(_certificadoHelperBase.Obter(id));
+            return Ok(_certificadoUseCase.Obter(id));
         }
     }
 }

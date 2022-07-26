@@ -19,6 +19,7 @@ namespace InjecaoDeDependencia
 
         public void Dispose()
         {
+            _store.Close();            
             _store.Dispose();
 
             _certificate2?.Reset();
