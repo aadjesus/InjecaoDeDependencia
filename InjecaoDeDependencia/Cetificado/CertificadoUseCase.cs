@@ -7,7 +7,7 @@ namespace InjecaoDeDependencia
     {
         private X509Certificate2 _certificate2;
         private readonly X509Store _store;
-        private readonly ICertificadoRepository _certificadoRepository;        
+        private readonly ICertificadoRepository _certificadoRepository;
 
         public CertificadoUseCase(ICertificadoRepository certificadoRepository)
         {
@@ -19,37 +19,31 @@ namespace InjecaoDeDependencia
 
         public void Dispose()
         {
-            _store.Close();            
-            _store.Dispose();
-
-            _certificate2?.Reset();
             _certificate2?.Dispose();
+            _store.Dispose();
 
             GC.SuppressFinalize(this);
         }
 
-        private X509Certificate2 this[string serialNumber]
+        public X509Certificate2 this[int id] =>
+            Obter(id);
+
+        private X509Certificate2 this[string serialNumber] =>
+            string.IsNullOrEmpty(serialNumber) ||
+            _store.Certificates.Find(X509FindType.FindBySerialNumber, serialNumber, false) is var certificado && certificado.Count == 0
+                ? null
+                : certificado[0];
+
+        public X509Certificate2 Obter(int id)
         {
-            get
-            {
-                if (_certificate2 == null)
-                    _certificate2 = _store.Certificates.Find(X509FindType.FindBySerialNumber, serialNumber, false)[0];
+            var certificadoModel = _certificadoRepository.GetById(id);
 
-                return _certificate2;
-            }
-        }
-
-        public X509Certificate2 Obter(int idCertificado)
-        {
-            var certificadoModel = _certificadoRepository.GetById(idCertificado);
-
-            if (string.IsNullOrEmpty(certificadoModel.SerialNumber) ||
-                this[certificadoModel.SerialNumber] == null)
+            if (this[certificadoModel.SerialNumber] == null)
             {
                 _certificate2 = new X509Certificate2(
                     certificadoModel.CaminhoArquivo.Trim(),
                     certificadoModel.Senha,
-                    X509KeyStorageFlags.EphemeralKeySet); // ñ cria o arquivo fisicamente
+                    X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet);
 
                 _certificadoRepository.AtualizarSerialNumber(
                     certificadoModel.Id,
@@ -61,10 +55,10 @@ namespace InjecaoDeDependencia
             var retorno = this[certificadoModel.SerialNumber];
 
             if (retorno.NotAfter < DateTime.UtcNow.ToLocalTime())
-                throw new CertificadoCteException(string.Concat(eMensagens.CertificadoExpirado, retorno.NotAfter));
+                throw new CertificadoCteException(string.Concat(eMensagens.CertificadoExpirado, " - ", retorno.NotAfter));
 
             if (retorno.NotBefore > DateTime.UtcNow.ToLocalTime())
-                throw new CertificadoCteException(string.Concat(eMensagens.CertificadoDataInvalida, retorno.NotBefore));
+                throw new CertificadoCteException(string.Concat(eMensagens.CertificadoDataInvalida, " - ", retorno.NotBefore));
 
             return retorno;
         }

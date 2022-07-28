@@ -2,20 +2,20 @@
 {
     public class CertificadoRepository : ICertificadoRepository
     {
-        public void AtualizarSerialNumber(int idCertificado, string serialNumber)
+        public void AtualizarSerialNumber(int id, string serialNumber)
         {
 
         }
 
-        public CertificadoModel GetById(int idCertificado)
+        public CertificadoModel GetById(int id)
         {
             var certificadoModel = new CertificadoModel
             {
-                SerialNumber = idCertificado == 1
-                    ? "3EFC8D8A157180AD418722EB68E3355A"
+                SerialNumber = id == 1
+                    ? "7B594C7E03F68AA18A69E7CA577EB3C663A0DFBC"
                     : "",
-                CaminhoArquivo = @"c:\TMP\Certificado\CampoBelo.pfx",
-                Senha = "06091966"
+                CaminhoArquivo = @"c:\TMP\Certificado\Transtassi.pfx",
+                Senha = "12345678"
             };
 
             return certificadoModel;
