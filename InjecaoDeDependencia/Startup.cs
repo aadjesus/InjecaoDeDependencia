@@ -1,3 +1,4 @@
+using InjecaoDeDependencia.Servico;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,9 +32,12 @@ namespace InjecaoDeDependencia
                 s.SwaggerDoc("v1", new OpenApiInfo { Title = "Protected API", Version = "v1" });
             });
 
-            services.AddSingleton<IWeatherForecast>(s => new WeatherForecast { Descricao = "Startup" });
             services.AddScoped<ICertificadoUseCase, CertificadoUseCase>();
             services.AddScoped<ICertificadoRepository, CertificadoRepository>();
+
+            services.AddSingleton<Servico1>();  // Cria um novo serviço apena uma vez durante todo tempo do aplicativo
+            services.AddScoped<Servico2>();     // Cria um instancia para cara scopo "Requisição"
+            services.AddTransient<Servico3>();  // Cria uma nova instancia do servico
 
             services.AddControllers();
         }
