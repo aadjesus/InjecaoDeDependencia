@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 namespace InjecaoDeDependencia
@@ -23,6 +24,8 @@ namespace InjecaoDeDependencia
         public X509Certificate2 Obter(int id)
         {
             var certificadoModel = _certificadoRepository.GetById(id);
+            if (certificadoModel == null || !File.Exists(certificadoModel.CaminhoArquivo))
+                throw new CertificadoCteException(eMensagens.CertificadoNCadastradoOuNEncontrado.ToString());
 
             _certificate2 = new X509Certificate2(
                 certificadoModel.CaminhoArquivo.Trim(),
